@@ -12,17 +12,19 @@ trait CascadeSoftDeletes
 
     public function getRelationsForCascadeSoftDeletes(): array
     {
-        if (!property_exists($this, 'cascadeSofDeleteRelations')) {
+        if (! property_exists($this, 'cascadeSofDeleteRelations')) {
             return [];
         }
+
         return $this->cascadeSofDeleteRelations;
     }
 
     public function getRelationsForCascadeRestore(): array
     {
-        if (!property_exists($this, 'cascadeRestoreRelations')) {
+        if (! property_exists($this, 'cascadeRestoreRelations')) {
             return $this->getRelationsForCascadeSoftDeletes();
         }
+
         return $this->cascadeRestoreRelations;
     }
 
@@ -51,7 +53,7 @@ trait CascadeSoftDeletes
                 foreach ($model->getRelationsForCascadeRestore() as $relationName) {
                     if ($model->isRelation($relationName) && method_exists($model, $relationName)) {
                         $relation = $model->{$relationName}();
-                        if (!$relation instanceof Relation) {
+                        if (! $relation instanceof Relation) {
                             continue;
                         }
 
@@ -60,7 +62,7 @@ trait CascadeSoftDeletes
 
                         $restorableModelsQuery = $relation->onlyTrashed();
 
-                        if (!config('cascade-soft-deletes.ignore_deleted_at_when_restoring')) {
+                        if (! config('cascade-soft-deletes.ignore_deleted_at_when_restoring')) {
                             $restorableModelsQuery->where($deletedAtColumn, '>=', $modelDeletedAt);
                         }
 
